@@ -1,4 +1,4 @@
-<html data-theme="garden">
+<html data-theme="bumblebee">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -8,6 +8,26 @@
     </script>
 </head>
 <body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+        </div>
+        <div class="navbar-center">
+            <a href="/home/main" class="btn btn-ghost text-xl">Favourite</a>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a th:href="@{/review/booklist}">Book review</a></li>
+                    <li><a th:href="@{/review/movielist}">Movie review</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="max-w-2xl w-full px-4">
         <h1 class="mb-4">
@@ -60,7 +80,7 @@
 
                         <!-- 수정 버튼 -->
                         <div class="mb-4 flex justify-end">
-                            <button type="submit" id="submitBtn" class="btn btn-primary">수정</button>
+                            <button type="submit" id="submitBtn" class="btn btn-outline">수정</button>
                         </div>
                     </form>
                 </div>
