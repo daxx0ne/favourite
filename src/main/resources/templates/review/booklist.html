@@ -1,0 +1,36 @@
+<html data-theme="garden">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>책 리뷰 목록</title>
+</head>
+
+<body>
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <div class="max-w-2xl w-full px-4">
+        <h1 class="text-3xl font-bold mb-4">책 리뷰 목록</h1>
+        <a th:href="@{/review/write}" class="btn btn-primary mb-4">작성하기</a>
+        <!-- 리뷰 목록 -->
+        <div th:each="review : ${reviews}" class="review-card bg-white p-4 shadow-lg rounded-lg mb-4">
+            <div class="review-title text-xl font-bold mb-2" th:text="${review.title}">Review Title</div>
+            <div class="review-info flex justify-between items-center mb-2">
+                <div>
+                    <p>저자명: <span th:text="${review.author}">Review Author</span></p>
+                    <p>평점: <span th:text="${review.rate}">Rating</span></p>
+                    <p>추천 수: <span th:text="${review.recommend}">Recommend</span></p>
+                </div>
+                <!-- 수정 및 삭제 버튼 -->
+                <div class="review-actions">
+                    <a th:href="@{/review/update/{id}(id=${review.id})}" class="btn btn-primary">수정</a>
+                    <a th:href="@{/review/delete/{id}(id=${review.id}, password=${review.password})}" class="btn btn-error">삭제</a>
+                    <!-- 추천 버튼 -->
+                    <button class="btn btn-success" th:id="'recommendButton_' + ${review.id}" th:onclick="'recommendReview(' + ${review.id} + ')'" th:text="'추천하기'"></button>
+                </div>
+            </div>
+            <!-- 한줄평 -->
+            <div class="review-content" th:text="${review.content}">One-line Review</div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

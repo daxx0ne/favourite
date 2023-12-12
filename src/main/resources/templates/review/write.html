@@ -1,21 +1,20 @@
-<html layout:decorate="~{layout/layout.html}">
+<html data-theme="garden">
 <head>
-    <title>게시글 작성하기</title>
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>리뷰 작성하기</title>
 
+    <script>
         function validateForm() {
-            var submitBtn = document.getElementById("submitBtn");
+            let submitBtn = document.getElementById("submitBtn");
             if (submitBtn.disabled) {
                 toastWarning("잠시만 기다려주세요.");
                 return false;
             }
 
-            var title = document.getElementById("title").value;
-            var content = document.getElementById("content").value;
-            var imageFileElement = document.getElementById("imageFile");
-            var imageFile = imageFileElement.files.length > 0 ? imageFileElement.files[0] : null;
-            var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
-            var submitBtn = document.getElementById('submitBtn');
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+            submitBtn = document.getElementById('submitBtn');
 
 
             if (title.trim().length === 0) {
@@ -28,21 +27,6 @@
                 return false;
             }
 
-            if (imageFile === null) {
-                toastWarning("파일을 첨부해주세요.");
-                return false;
-            }
-
-            if (imageFile.size > 10 * 1024 * 1024) {
-                toastWarning("첨부된 파일의 크기가 10MB를 초과합니다.");
-                return false;
-            }
-
-            var fileType = imageFile["type"];
-            if (!validImageTypes.includes(fileType)) {
-                toastWarning("첨부된 파일이 이미지 타입이 아닙니다.");
-                return false;
-            }
             if (title.length > 20) {
                 toastWarning("제목은 최대 20자까지 작성 가능합니다.");
                 return false;
@@ -68,52 +52,65 @@
             });
         });
     </script>
-
 </head>
 <body>
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="max-w-2xl w-full px-4">
         <h1 class="mb-4">
             <i class="fa-solid fa-pen-to-square"></i>
-            게시글 작성하기
         </h1>
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <br>
-                    <form th:action="@{/usr/article/write}" method="post" encType="multipart/form-data"
-                          onSubmit="return validateForm()">
+                    <form th:action="@{/review/write}" method="post" onSubmit="return validateForm()">
+                        <!-- 제목 필드 -->
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                                제목
-                            </label>
-                            <input class="input input-bordered w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                   id="title" type="text" placeholder="Title" name="title">
+                            <label for="title" class="block text-gray-700 text-sm font-bold mb-2">제목</label>
+                            <input type="text" id="title" name="title" class="input input-bordered w-full"
+                                   placeholder="Title" maxlength="20">
                         </div>
-                        <div>
-                        </div>
+
+                        <!-- Author 입력 필드 추가 -->
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="content">
-                                내용
-                            </label>
-                            <div class="relative">
-                                <textarea
-                                        class="textarea textarea-bordered w-full h-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="content" placeholder="Content" name="content"></textarea>
-                                <div id="contentCount" class="absolute right-5 bottom-5">(0 / 200)</div>
-                            </div>
+                            <label for="author" class="block text-gray-700 text-sm font-bold mb-2">저자명/감독명</label>
+                            <input type="text" id="author" name="author" class="input input-bordered w-full"
+                                   placeholder="Author" maxlength="10">
                         </div>
+
+                        <!-- 내용 필드 -->
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="imageFile">
-                                이미지 업로드
-                            </label>
-                            <input type="file" id="imageFile" name="imageFile"
-                                   class="file-input file-input-bordered file-input-accent w-full max-w-xs">
+                            <label for="content" class="block text-gray-700 text-sm font-bold mb-2">한줄평</label>
+                            <textarea id="content" name="content" class="textarea textarea-bordered w-full"
+                                      placeholder="Content" maxlength="100"></textarea>
+                            <div id="contentCount" class="text-right">(0 / 100)</div>
                         </div>
+
+                        <!-- 카테고리 선택 -->
+                        <div class="mb-4">
+                            <label for="category" class="block text-gray-700 text-sm font-bold mb-2">카테고리</label>
+                            <select id="category" name="categoryId" class="select select-bordered w-full">
+                                <option value="1">Book</option>
+                                <option value="2">Movie</option>
+                            </select>
+                        </div>
+
+                        <!-- 평점 입력 -->
+                        <div class="mb-4">
+                            <label for="rate" class="block text-gray-700 text-sm font-bold mb-2">평점 (1-5)</label>
+                            <input type="number" id="rate" name="rate" class="input input-bordered w-full"
+                                   placeholder="Rating" min="1" max="5">
+                        </div>
+
+                        <!-- 비밀번호 입력 -->
+                        <div class="mb-4">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">비밀번호 (4자리)</label>
+                            <input type="password" id="password" name="password" class="input input-bordered w-full"
+                                   placeholder="Password" maxlength="4">
+                        </div>
+
+                        <!-- 제출 버튼 -->
                         <div class="mb-4 flex justify-end">
-                            <button class="btn btn-primary hover:bg-gray-300" type="submit" id="submitBtn">
-                                작성
-                            </button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary">작성</button>
                         </div>
                     </form>
                 </div>
