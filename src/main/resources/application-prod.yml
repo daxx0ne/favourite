@@ -6,8 +6,8 @@ spring:
   profiles:
     active: dev
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://172.17.0.1:3306/favourite?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.17.0.1:3306/favourite?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: dawon
     password: pms41414
   jpa:
@@ -18,3 +18,9 @@ spring:
         show_sql: false
         format_sql: false
         use_sql_comments: false
+logging:
+  level:
+    root: INFO
+    yu.favourite: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.orm.jdbc.extract: INFO
