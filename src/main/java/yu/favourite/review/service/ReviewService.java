@@ -28,17 +28,6 @@ public class ReviewService {
         reviewRepository.save(reviewDTO.toEntity());
     }
 
-
-    public void deleteReview(Long id, int inputPassword) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다: " + id));
-
-        if (review.getPassword() != inputPassword) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
-        reviewRepository.deleteById(id);
-    }
-
     public ReviewDTO findById(Long id) {
         Review review = (Review) reviewRepository.findById(id).orElse(null);
         ReviewDTO build = ReviewDTO.builder()

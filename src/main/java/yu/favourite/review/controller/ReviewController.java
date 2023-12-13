@@ -31,7 +31,7 @@ public class ReviewController {
 
     @GetMapping("/booklist")
     public String listBookReviews(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "6") int size,
+                                  @RequestParam(defaultValue = "5") int size,
                                   Model model) {
         Page<ReviewDTO> reviewPage = reviewService.findReviewsByCategory(1, page, size);
         model.addAttribute("reviews", reviewPage.getContent());
@@ -42,7 +42,7 @@ public class ReviewController {
 
     @GetMapping("/movielist")
     public String listMovieReviews(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "6") int size,
+                                   @RequestParam(defaultValue = "5") int size,
                                    Model model) {
         Page<ReviewDTO> reviewPage = reviewService.findReviewsByCategory(2, page, size);
         model.addAttribute("reviews", reviewPage.getContent());
