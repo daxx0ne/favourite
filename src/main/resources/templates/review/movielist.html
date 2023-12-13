@@ -1,8 +1,20 @@
-<html data-theme="bumblebee">
+<html layout:decorate="~{common/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css"/>
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>영화 리뷰 목록</title>
+
+    <script>
+        function recommendReview(reviewId) {
+            fetch('/review/recommend/' + reviewId, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if(data) {
+                        // 추천 수 업데이트 로직
+                        document.getElementById('recommendCount_' + reviewId).innerText = data.recommend;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </head>
 
 <body>
@@ -28,27 +40,41 @@
 </header>
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="max-w-2xl w-full px-4">
-        <h1 class="text-3xl font-bold mb-4">영화 리뷰 목록</h1>
-        <a th:href="@{/review/write}" class="btn btn-neutral mb-4">작성하기</a>
+        <h1 class="text-3xl font-bold mb-4">Movie Review</h1>
+        <a th:href="@{/review/write}" class="btn btn-outline w-full mb-4">리뷰 작성하기</a>
         <!-- 리뷰 목록 -->
-        <div th:each="review : ${reviews}" class="review-card bg-white p-4 shadow-lg rounded-lg mb-4">
+        <div th:each="review : ${reviews}" class="review-card bg-white p-4 shadow-lg rounded-lg mb-4 flex flex-col">
             <div class="review-title text-xl font-bold mb-2" th:text="${review.title}">Review Title</div>
             <div class="review-info flex justify-between items-center mb-2">
                 <div>
                     <p>감독명: <span th:text="${review.author}">Review Director</span></p>
-                    <p>평점: <span th:text="${review.rate}">Rating</span></p>
+                    <!-- 평점 표시 (텍스트와 별 모양) -->
+                    <div class="review-rating flex items-center">
+                        <span class="mr-2">평점:</span>
+                        <div class="flex">
+                            <p th:each="star : ${#numbers.sequence(1, review.rate)}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24" stroke="none"><path d="M12 .587l3.297 6.673 7.176 1.044-5.19 5.058 1.225 7.15L12 17.26l-6.508 3.252 1.225-7.15-5.19-5.058 7.176-1.044L12 .587z"/></svg>
+                            </p>
+                        </div>
+                    </div>
                     <p>추천 수: <span th:text="${review.recommend}">Recommend</span></p>
                 </div>
-                <!-- 수정 및 삭제 버튼 -->
-                <div class="review-actions">
-                    <a th:href="@{/review/update/{id}(id=${review.id})}" class="btn btn-primary">수정</a>
-                    <a th:href="@{/review/delete/{id}(id=${review.id}, password=${review.password})}" class="btn btn-error">삭제</a>
-                    <!-- 추천 버튼 -->
-                    <button class="btn btn-success" th:id="'recommendButton_' + ${review.id}" th:onclick="'recommendReview(' + ${review.id} + ')'" th:text="'추천하기'"></button>
+                <!-- 수정, 삭제, 추천 버튼 (오른쪽 하단 위치) -->
+                <div class="mt-4 flex justify-end">
+                    <button class="btn btn-success btn-sm mx-1" th:onclick="'recommendReview(\'' + ${review.id} + '\')'" >추천</button>
+                    <a th:href="@{/review/update/{id}(id=${review.id})}" class="btn btn-primary btn-sm mx-1">수정</a>
+                    <a th:href="@{/review/delete/{id}(id=${review.id}, password=${review.password})}" class="btn btn-error btn-sm mx-1">삭제</a>
                 </div>
             </div>
             <!-- 한줄평 -->
-            <div class="review-content" th:text="${review.content}">One-line Review</div>
+            <div class="review-content mt-2 whitespace-normal break-words" th:text="${review.content}">One-line Review</div>
+        </div>
+        <div class="pagination flex justify-center gap-2 mt-4">
+            <a th:if="${currentPage > 0}" th:href="@{/review/booklist(page=${currentPage - 1}, size=${size})}" class="btn">«</a>
+            <div th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" class="join-item">
+                <a th:href="@{/review/booklist(page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" th:class="${pageNum == currentPage} ? 'btn btn-active' : 'btn'"></a>
+            </div>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/review/booklist(page=${currentPage + 1}, size=${size})}" class="btn">»</a>
         </div>
     </div>
 </main>

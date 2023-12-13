@@ -1,24 +1,23 @@
-<html data-theme="bumblebee">
+<html layout:decorate="~{common/layout.html}">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>리뷰 작성하기</title>
-
     <script>
         function validateForm() {
-            let submitBtn = document.getElementById("submitBtn");
-            if (submitBtn.disabled) {
-                toastWarning("잠시만 기다려주세요.");
-                return false;
-            }
+            var submitBtn = document.getElementById('submitBtn');
 
             const title = document.getElementById("title").value;
+            const author = document.getElementById("author").value;
             const content = document.getElementById("content").value;
-            submitBtn = document.getElementById('submitBtn');
-
+            const rate = document.querySelector('input[name="rate"]:checked');
+            const password = document.getElementById("password").value;
 
             if (title.trim().length === 0) {
                 toastWarning("제목을 입력해주세요.");
+                return false;
+            }
+
+            if (author.trim().length === 0) {
+                toastWarning("저자명/감독명을 입력해주세요.");
                 return false;
             }
 
@@ -27,27 +26,39 @@
                 return false;
             }
 
+            if (!rate) {
+                toastWarning("평점을 선택해주세요.");
+                return false;
+            }
+
+            if (password.trim().length === 0) {
+                toastWarning("비밀번호를 입력해주세요.");
+                return false;
+            }
+
             if (title.length > 20) {
                 toastWarning("제목은 최대 20자까지 작성 가능합니다.");
                 return false;
             }
-            submitBtn.disabled = true; // 버튼을 비활성화
 
-            setTimeout(function () {
-                submitBtn.disabled = false; // 일정 시간 후에 버튼을 다시 활성화
-            }, 10000); // 10초 (10000 밀리초) 동안 버튼을 비활성화
+            if (password.length !== 4) {
+                toastWarning("비밀번호는 4자리여야 합니다.");
+                return false;
+            }
+
+            document.getElementById('submitBtn').disabled = true;
 
             return true;
         }
 
         $(document).ready(function () {
             $('#content').on('keyup', function () {
-                $('#contentCount').html("(" + $(this).val().length + " / 200)");
+                $('#contentCount').html("(" + $(this).val().length + " / 100)");
 
-                if ($(this).val().length > 200) {
-                    toastWarning("내용은 최대 200자까지 작성 가능합니다.");
-                    $(this).val($(this).val().substring(0, 200));
-                    $('#contentCount').html("(200 / 200)");
+                if ($(this).val().length > 100) {
+                    toastWarning("내용은 최대 100자까지 작성 가능합니다.");
+                    $(this).val($(this).val().substring(0, 100));
+                    $('#contentCount').html("(100 / 100)");
                 }
             });
         });
@@ -78,6 +89,7 @@
     <div class="max-w-2xl w-full px-4">
         <h1 class="mb-4">
             <i class="fa-solid fa-pen-to-square"></i>
+            리뷰 작성하기
         </h1>
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
@@ -116,10 +128,21 @@
 
                         <!-- 평점 입력 -->
                         <div class="mb-4">
-                            <label for="rate" class="block text-gray-700 text-sm font-bold mb-2">평점 (1-5)</label>
-                            <input type="number" id="rate" name="rate" class="input input-bordered w-full"
-                                   placeholder="Rating" min="1" max="5">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">평점</label>
+                            <div class="rating">
+                                <input type="radio" id="star1" name="rate" value="1" class="mask mask-star-2 bg-orange-400" />
+                                <label for="star1" class="cursor-pointer"></label>
+                                <input type="radio" id="star2" name="rate" value="2" class="mask mask-star-2 bg-orange-400" />
+                                <label for="star2" class="cursor-pointer"></label>
+                                <input type="radio" id="star3" name="rate" value="3" class="mask mask-star-2 bg-orange-400" />
+                                <label for="star3" class="cursor-pointer"></label>
+                                <input type="radio" id="star4" name="rate" value="4" class="mask mask-star-2 bg-orange-400" />
+                                <label for="star4" class="cursor-pointer"></label>
+                                <input type="radio" id="star5" name="rate" value="5" class="mask mask-star-2 bg-orange-400" checked />
+                                <label for="star5" class="cursor-pointer"></label>
+                            </div>
                         </div>
+
 
                         <!-- 비밀번호 입력 -->
                         <div class="mb-4">

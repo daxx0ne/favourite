@@ -1,6 +1,7 @@
 package yu.favourite.review.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,33 +9,45 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yu.favourite.review.dto.ReviewDTO;
+import yu.favourite.review.entity.Review;
+import yu.favourite.review.repository.ReviewRepository;
 import yu.favourite.review.service.ReviewService;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/review")
 public class ReviewController {
     private final ReviewService reviewService;
+    private final ReviewRepository reviewRepository;
 
     // 생성자
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, ReviewRepository reviewRepository) {
         this.reviewService = reviewService;
+        this.reviewRepository = reviewRepository;
     }
 
     @GetMapping("/booklist")
-    public String listBookReviews(Model model) {
-        List<ReviewDTO> reviews = reviewService.findReviewsByCategory(1); // 책 카테고리는 1로 가정
-        model.addAttribute("reviews", reviews);
+    public String listBookReviews(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "6") int size,
+                                  Model model) {
+        Page<ReviewDTO> reviewPage = reviewService.findReviewsByCategory(1, page, size);
+        model.addAttribute("reviews", reviewPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", reviewPage.getTotalPages());
         return "review/booklist";
     }
 
     @GetMapping("/movielist")
-    public String listMovieReviews(Model model) {
-        List<ReviewDTO> reviews = reviewService.findReviewsByCategory(2); // 영화 카테고리는 2로 가정
-        model.addAttribute("reviews", reviews);
+    public String listMovieReviews(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "6") int size,
+                                   Model model) {
+        Page<ReviewDTO> reviewPage = reviewService.findReviewsByCategory(2, page, size);
+        model.addAttribute("reviews", reviewPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", reviewPage.getTotalPages());
         return "review/movielist";
     }
 
@@ -64,49 +77,44 @@ public class ReviewController {
         return "review/update";
     }
 
-    // 리뷰 수정
     @PostMapping("/update/{id}")
-    public String update(@PathVariable Long id, ReviewDTO reviewDTO, @RequestParam int password, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String update(@PathVariable Long id, ReviewDTO reviewDTO, @RequestParam String password, RedirectAttributes redirectAttributes) {
         try {
             reviewService.updateReview(id, reviewDTO, password);
             redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 수정되었습니다.");
-
-            // 홈 페이지로 리다이렉트
             return "redirect:/";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
             return "redirect:/review/update/{id}";
         }
     }
 
-
-    // 리뷰 삭제
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, @RequestParam int password, RedirectAttributes redirectAttributes) {
+    public String showDeleteForm(@PathVariable Long id, Model model) {
+        ReviewDTO review = reviewService.findById(id);
+        model.addAttribute("review", review);
+        return "review/delete";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delte(@PathVariable Long id, @RequestParam String password, RedirectAttributes redirectAttributes) {
         try {
             reviewService.deleteReview(id, password);
             redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 삭제되었습니다.");
             return "redirect:/";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/";
+            redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/review/delete/{id}";
         }
     }
 
-    @PostMapping("/recommend/{reviewId}")
-    public ResponseEntity<?> recommendReview(@PathVariable Long reviewId) {
+    @PostMapping("/recommend/{id}")
+    public ResponseEntity<ReviewDTO> recommendReview(@PathVariable Long id) {
         try {
-            // 해당 리뷰의 추천 수를 데이터베이스에서 가져옵니다.
-            int recommendCount = reviewService.incrementRecommendCount(reviewId);
-
-            // 업데이트된 추천 수를 JSON 형태로 응답합니다.
-            Map<String, Integer> response = new HashMap<>();
-            response.put("recommendCount", recommendCount);
-            return ResponseEntity.ok(response);
+            ReviewDTO updatedReview = reviewService.incrementRecommend(id);
+            return ResponseEntity.ok(updatedReview);
         } catch (Exception e) {
-            // 예외 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 }

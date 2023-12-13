@@ -28,11 +28,10 @@ public class ReviewDTO {
     }
 
     @Builder
-    public ReviewDTO(Long id, int categoryId, String categoryName, String author,
+    public ReviewDTO(Long id, int categoryId, String author,
                      String title, String content, int rate, int password, int recommend) {
         this.id = id;
         this.categoryId = categoryId;
-        this.categoryName = categoryName;
         this.author = author;
         this.title = title;
         this.content = content;

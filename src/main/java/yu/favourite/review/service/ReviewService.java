@@ -1,5 +1,9 @@
 package yu.favourite.review.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yu.favourite.category.repository.CategoryRepository;
@@ -7,8 +11,7 @@ import yu.favourite.review.dto.ReviewDTO;
 import yu.favourite.review.entity.Review;
 import yu.favourite.review.repository.ReviewRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 public class ReviewService {
@@ -21,6 +24,7 @@ public class ReviewService {
 
     @Transactional
     public void saveReview(ReviewDTO reviewDTO) {
+        Review review = reviewDTO.toEntity();
         reviewRepository.save(reviewDTO.toEntity());
     }
 
@@ -50,12 +54,15 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(Long id, ReviewDTO reviewDTO, int inputPassword) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다: " + id));
+    public void updateReview(Long id, ReviewDTO reviewDTO, String inputPassword) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다: " + id));
 
-        if (review.getPassword() != inputPassword) {
+        int inputPasswordInt = Integer.parseInt(inputPassword);
+        if (review.getPassword() != inputPasswordInt) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+
         review.setAuthor(reviewDTO.getAuthor());
         review.setTitle(reviewDTO.getTitle());
         review.setContent(reviewDTO.getContent());
@@ -64,34 +71,58 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public List<ReviewDTO> findReviewsByCategory(int categoryId) {
-        List<Review> reviews = reviewRepository.findByCategoryId(categoryId);
-        return reviews.stream().map(review -> ReviewDTO.builder()
-                        .id(review.getId())
-                        .author(review.getAuthor())
-                        .title(review.getTitle())
-                        .content(review.getContent())
-                        .rate(review.getRate())
-                        .password(review.getPassword())
-                        .recommend(review.getRecommend())
-                        .build())
-                .collect(Collectors.toList());
+
+    @Transactional(readOnly = true)
+    public Page<ReviewDTO> findReviewsByCategory(int categoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Review> reviews = reviewRepository.findByCategoryId(categoryId, pageable);
+
+        return reviews.map(review -> new ReviewDTO(
+                review.getId(),
+                review.getCategoryId(),
+                review.getAuthor(),
+                review.getTitle(),
+                review.getContent(),
+                review.getRate(),
+                review.getPassword(),
+                review.getRecommend()
+        ));
     }
 
     @Transactional
-    public int incrementRecommendCount(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
+    public ReviewDTO incrementRecommend(Long id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+        review.setRecommend(review.getRecommend() + 1);
+        review = reviewRepository.save(review);
+        return convertToDTO(review);
+    }
 
-        // 현재 추천 수를 가져와서 1 증가시킵니다.
-        int currentRecommendCount = review.getRecommend();
-        int updatedRecommendCount = currentRecommendCount + 1;
-        review.setRecommend(updatedRecommendCount);
+    private ReviewDTO convertToDTO(Review review) {
+        if (review == null) {
+            return null;
+        }
+        return ReviewDTO.builder()
+                .id(review.getId())
+                .author(review.getAuthor())
+                .title(review.getTitle())
+                .content(review.getContent())
+                .rate(review.getRate())
+                .password(review.getPassword())
+                .recommend(review.getRecommend())
+                .build();
+    }
 
-        // 업데이트된 추천 수를 데이터베이스에 저장합니다.
-        reviewRepository.save(review);
+    public void deleteReview(Long id, String password) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다: " + id));
 
-        return updatedRecommendCount;
+        int inputPasswordInt = Integer.parseInt(password);
+        if (review.getPassword() != inputPasswordInt) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        reviewRepository.deleteById(id);
     }
 }
 

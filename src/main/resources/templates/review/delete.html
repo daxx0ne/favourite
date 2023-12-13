@@ -1,0 +1,78 @@
+<html layout:decorate="~{common/layout.html}">
+<head>
+    <title>리뷰 삭제하기</title>
+
+    <script>
+        function validateForm() {
+
+            const password = document.getElementById("password").value;
+
+            if (password.trim().length === 0) {
+                toastWarning("비밀번호를 입력해주세요.");
+                return false;
+            }
+
+            if (password.length !== 4) {
+                toastWarning("비밀번호는 4자리여야 합니다.");
+                return false;
+            }
+
+            return true;
+        }
+
+        $(document).ready(function () {
+            $('#content').on('keyup', function () {
+                $('#contentCount').html("(" + $(this).val().length + " / 100)");
+            });
+        });
+    </script>
+</head>
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+        </div>
+        <div class="navbar-center">
+            <a href="/home/main" class="btn btn-ghost text-xl">Favourite</a>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a th:href="@{/review/booklist}">Book review</a></li>
+                    <li><a th:href="@{/review/movielist}">Movie review</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <div class="max-w-2xl w-full px-4">
+        <h1 class="mb-4">
+            <i class="fa-solid fa-pen-to-square"></i>
+            리뷰 삭제하기
+        </h1>
+        <div class="flex flex-col gap-4">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <form th:action="@{/review/delete/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
+                        <!-- 비밀번호 확인 -->
+                        <div class="mb-4">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">비밀번호 확인 (4자리)</label>
+                            <input type="password" id="password" name="password" class="input input-bordered w-full" placeholder="Password" maxlength="4">
+                        </div>
+
+                        <!-- 삭제 버튼 -->
+                        <div class="mb-4 flex justify-end">
+                            <button type="submit" id="submitBtn" class="btn btn-outline">삭제</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
