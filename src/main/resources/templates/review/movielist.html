@@ -1,4 +1,4 @@
-<html layout:decorate="~{common/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{common/layout.html}">
 <head>
     <title>영화 리뷰 목록</title>
 
@@ -26,13 +26,28 @@
             <a href="/home/main" class="btn btn-ghost text-xl">Favourite</a>
         </div>
         <div class="navbar-end">
-            <div class="dropdown">
+            <div class="dropdown dropdown-bottom dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
                 </div>
-                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a th:href="@{/review/booklist}">Book review</a></li>
-                    <li><a th:href="@{/review/movielist}">Movie review</a></li>
+                <ul tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li>
+                        <a th:href="@{/review/booklist}">
+                            <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
+                            Book review
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/review/movielist}">
+                            <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
+                            Movie review
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -40,7 +55,10 @@
 </header>
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="max-w-2xl w-full px-4">
-        <h1 class="text-3xl font-bold mb-4">Movie Review</h1>
+        <h1 class="text-3xl font-bold mb-4">
+            <i class="fa-solid fa-film text-2xl mr-2"></i>
+            Movie Review
+        </h1>
         <a th:href="@{/review/write}" class="btn btn-outline w-full mb-4">리뷰 작성하기</a>
         <!-- 리뷰 목록 -->
         <div th:each="review : ${reviews}" class="review-card bg-white p-4 shadow-lg rounded-lg mb-4 flex flex-col">
@@ -70,11 +88,11 @@
             <div class="review-content mt-2 whitespace-normal break-words" th:text="${review.content}">One-line Review</div>
         </div>
         <div class="pagination flex justify-center gap-2 mt-4">
-            <a th:if="${currentPage > 0}" th:href="@{/review/booklist(page=${currentPage - 1}, size=${size})}" class="btn">«</a>
+            <a th:if="${currentPage > 0}" th:href="@{/review/movielist(page=${currentPage - 1}, size=${size})}" class="btn">«</a>
             <div th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" class="join-item">
-                <a th:href="@{/review/booklist(page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" th:class="${pageNum == currentPage} ? 'btn btn-active' : 'btn'"></a>
+                <a th:href="@{/review/movielist(page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" th:class="${pageNum == currentPage} ? 'btn btn-active' : 'btn'"></a>
             </div>
-            <a th:if="${currentPage < totalPages - 1}" th:href="@{/review/booklist(page=${currentPage + 1}, size=${size})}" class="btn">»</a>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/review/movielist(page=${currentPage + 1}, size=${size})}" class="btn">»</a>
         </div>
     </div>
 </main>

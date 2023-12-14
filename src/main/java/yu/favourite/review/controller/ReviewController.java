@@ -9,13 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yu.favourite.review.dto.ReviewDTO;
-import yu.favourite.review.entity.Review;
+
 import yu.favourite.review.repository.ReviewRepository;
 import yu.favourite.review.service.ReviewService;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/review")

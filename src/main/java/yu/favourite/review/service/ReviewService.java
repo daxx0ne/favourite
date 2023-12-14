@@ -11,7 +11,6 @@ import yu.favourite.review.dto.ReviewDTO;
 import yu.favourite.review.entity.Review;
 import yu.favourite.review.repository.ReviewRepository;
 
-import java.util.Objects;
 
 @Service
 public class ReviewService {
@@ -56,7 +55,7 @@ public class ReviewService {
         review.setTitle(reviewDTO.getTitle());
         review.setContent(reviewDTO.getContent());
         review.setRate(reviewDTO.getRate());
-        review.setRecommend(reviewDTO.getRecommend());
+
         reviewRepository.save(review);
     }
 

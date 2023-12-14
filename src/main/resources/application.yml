@@ -4,10 +4,10 @@ spring:
       filter:
         enabled: true
   profiles:
-    active: dev
+    active:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/favourite__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://127.0.0.1:3306/favourite?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: root
     password: pms41414
   jpa:
