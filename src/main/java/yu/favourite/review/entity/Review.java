@@ -6,13 +6,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import yu.favourite.member.entity.Member;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Review {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,16 +41,20 @@ public class Review {
 
     private int recommend;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member; // member 테이블의 유저네임을 가져오고 싶어서 참조
+
     @Builder
-    public Review(Long id, int categoryId, String author, String title,
-                  String content, int rate, int password, int recommend) {
+    public Review(Long id, Member member, int categoryId, String author, String title,
+                  String content, int rate, int recommend) {
         this.id = id;
+        this.member = member;
         this.categoryId = categoryId;
         this.author = author;
         this.title = title;
         this.content = content;
         this.rate = rate;
-        this.password = password;
         this.recommend = recommend;
     }
 
@@ -68,5 +76,9 @@ public class Review {
 
     public void setRecommend(int recommend) {
         this.recommend = recommend;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

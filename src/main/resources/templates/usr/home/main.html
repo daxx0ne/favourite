@@ -9,7 +9,7 @@
         <div class="navbar-start">
         </div>
         <div class="navbar-center">
-            <a href="/home/main" class="btn btn-ghost text-xl">Favourite</a>
+            <a class="btn btn-ghost text-xl">Favourite</a>
         </div>
         <div class="navbar-end">
             <div class="dropdown dropdown-bottom dropdown-end">
@@ -23,13 +23,13 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a th:href="@{/review/booklist}">
+                        <a th:href="@{/usr/review/booklist}">
                             <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/review/movielist}">
+                        <a th:href="@{/usr/review/movielist}">
                             <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Movie review
                         </a>
@@ -45,8 +45,8 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body flex">
-                    <a href="/review/booklist" class="btn btn-lg btn-primary flex-auto"><i class="fa-solid fa-book"></i>BOOK</a>
-                    <a href="/review/movielist" class="btn btn-lg btn-secondary flex-auto"><i class="fa-solid fa-film"></i>MOVIE</a>
+                    <a th:href="@{/usr/review/booklist}" class="btn btn-lg btn-primary flex-auto"><i class="fa-solid fa-book"></i>BOOK</a>
+                    <a th:href="@{/usr/review/movielist}" class="btn btn-lg btn-secondary flex-auto"><i class="fa-solid fa-film"></i>MOVIE</a>
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
-package yu.favourite.rq;
+package yu.favourite.util;
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +47,6 @@ public class Ut {
             if (diffHours > 0) sb.append(diffHours).append("시간 ");
             if (diffMinutes > 0) sb.append(diffMinutes).append("분 ");
             if (diffSeconds > 0) sb.append(diffSeconds).append("초 ");
-
             if (sb.isEmpty()) sb.append("1초 ");
 
             return sb.append(suffix).toString();

@@ -4,27 +4,38 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yu.favourite.category.repository.CategoryRepository;
+import yu.favourite.member.entity.Member;
+import yu.favourite.member.repository.MemberRepository;
 import yu.favourite.review.dto.ReviewDTO;
 import yu.favourite.review.entity.Review;
 import yu.favourite.review.repository.ReviewRepository;
-
 
 @Service
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final MemberRepository memberRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, CategoryRepository categoryRepository) {
+    public ReviewService(ReviewRepository reviewRepository, MemberRepository memberRepository) {
         this.reviewRepository = reviewRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional
     public void saveReview(ReviewDTO reviewDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Member member = memberRepository.findByUsername(currentUsername)  // MemberRepository를 사용하여 Member 검색
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+
         Review review = reviewDTO.toEntity();
-        reviewRepository.save(reviewDTO.toEntity());
+        review.setMember(member);  // Review 객체에 Member 설정
+        reviewRepository.save(review);
     }
 
     public ReviewDTO findById(Long id) {
@@ -35,26 +46,28 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .rate(review.getRate())
-                .password(review.getPassword())
                 .recommend(review.getRecommend())
                 .build();
         return build;
     }
 
     @Transactional
-    public void updateReview(Long id, ReviewDTO reviewDTO, String inputPassword) {
+    public void updateReview(Long id, ReviewDTO reviewDTO) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다: " + id));
 
-        int inputPasswordInt = Integer.parseInt(inputPassword);
-        if (review.getPassword() != inputPasswordInt) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        // 현재 로그인한 사용자 검증
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        if (!review.getMember().getUsername().equals(currentUsername)) {
+            throw new AccessDeniedException("수정 권한이 없습니다.");
         }
 
-        review.setAuthor(reviewDTO.getAuthor());
+        // 리뷰 업데이트 로직
         review.setTitle(reviewDTO.getTitle());
         review.setContent(reviewDTO.getContent());
         review.setRate(reviewDTO.getRate());
+        review.setAuthor(reviewDTO.getAuthor());
 
         reviewRepository.save(review);
     }
@@ -65,16 +78,16 @@ public class ReviewService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Review> reviews = reviewRepository.findByCategoryId(categoryId, pageable);
 
-        return reviews.map(review -> new ReviewDTO(
-                review.getId(),
-                review.getCategoryId(),
-                review.getAuthor(),
-                review.getTitle(),
-                review.getContent(),
-                review.getRate(),
-                review.getPassword(),
-                review.getRecommend()
-        ));
+        return reviews.map(review -> ReviewDTO.builder()
+                .id(review.getId())
+                .categoryId(review.getCategoryId())
+                .author(review.getAuthor())
+                .title(review.getTitle())
+                .content(review.getContent())
+                .rate(review.getRate())
+                .recommend(review.getRecommend())
+                .username(review.getMember().getUsername())
+                .build());
     }
 
     @Transactional
@@ -96,21 +109,26 @@ public class ReviewService {
                 .title(review.getTitle())
                 .content(review.getContent())
                 .rate(review.getRate())
-                .password(review.getPassword())
                 .recommend(review.getRecommend())
+                .username(review.getMember().getUsername())
                 .build();
     }
 
-    public void deleteReview(Long id, String password) {
+    @Transactional
+    public void deleteReview(Long id) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다: " + id));
 
-        int inputPasswordInt = Integer.parseInt(password);
-        if (review.getPassword() != inputPasswordInt) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        // 현재 로그인한 사용자 검증
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        if (!review.getMember().getUsername().equals(currentUsername)) {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
 
+        // 리뷰 삭제
         reviewRepository.deleteById(id);
     }
+
 }
 

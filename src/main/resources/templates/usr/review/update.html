@@ -62,7 +62,7 @@
         <div class="navbar-start">
         </div>
         <div class="navbar-center">
-            <a href="/home/main" class="btn btn-ghost text-xl">Favourite</a>
+            <a class="btn btn-ghost text-xl">Favourite</a>
         </div>
         <div class="navbar-end">
             <div class="dropdown dropdown-bottom dropdown-end">
@@ -76,13 +76,13 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a th:href="@{/review/booklist}">
+                        <a th:href="@{/usr/review/booklist}">
                             <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/review/movielist}">
+                        <a th:href="@{/usr/review/movielist}">
                             <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Movie review
                         </a>
@@ -101,7 +101,7 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <form th:action="@{/review/update/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
+                    <form th:action="@{/usr/review/update/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
                         <!-- 제목 필드 -->
                         <div class="mb-4">
                             <label for="title" class="block text-gray-700 text-sm font-bold mb-2">제목</label>
@@ -145,12 +145,6 @@
                                 <input type="radio" id="star5" name="rate" value="5" class="mask mask-star-2 bg-orange-400" checked />
                                 <label for="star5" class="cursor-pointer"></label>
                             </div>
-                        </div>
-
-                        <!-- 비밀번호 확인 -->
-                        <div class="mb-4">
-                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">비밀번호 확인 (4자리)</label>
-                            <input type="password" id="password" name="password" class="input input-bordered w-full" placeholder="Password" maxlength="4">
                         </div>
 
                         <!-- 수정 버튼 -->

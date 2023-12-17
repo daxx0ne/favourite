@@ -1,20 +1,6 @@
 <html layout:decorate="~{common/layout.html}">
 <head>
-    <title>책 리뷰 목록</title>
-
-    <script>
-        function recommendReview(reviewId) {
-            fetch('/review/recommend/' + reviewId, { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if(data) {
-                        // 추천 수 업데이트 로직
-                        document.getElementById('recommendCount_' + reviewId).innerText = data.recommend;
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
+    <title>영화 리뷰 목록</title>
 </head>
 
 <body>
@@ -23,7 +9,7 @@
         <div class="navbar-start">
         </div>
         <div class="navbar-center">
-            <a href="/home/main" class="btn btn-ghost text-xl">Favourite</a>
+            <a class="btn btn-ghost text-xl">Favourite</a>
         </div>
         <div class="navbar-end">
             <div class="dropdown dropdown-bottom dropdown-end">
@@ -37,13 +23,13 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a th:href="@{/review/booklist}">
+                        <a th:href="@{/usr/review/booklist}">
                             <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/review/movielist}">
+                        <a th:href="@{/usr/review/movielist}">
                             <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Movie review
                         </a>
@@ -56,16 +42,17 @@
 <main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <div class="max-w-2xl w-full px-4">
         <h1 class="text-3xl font-bold mb-4">
-            <i class="fa-solid fa-book text-2xl mr-2"></i>
-            Book Review
+            <i class="fa-solid fa-film text-2xl mr-2"></i>
+            Movie Review
         </h1>
-        <a th:href="@{/review/write}" class="btn btn-outline w-full mb-4">리뷰 작성하기</a>
+        <a th:href="@{/usr/review/write}" class="btn btn-outline w-full mb-4">리뷰 작성하기</a>
         <!-- 리뷰 목록 -->
         <div th:each="review : ${reviews}" class="review-card bg-white p-4 shadow-lg rounded-lg mb-4 flex flex-col">
             <div class="review-title text-xl font-bold mb-2" th:text="${review.title}">Review Title</div>
             <div class="review-info flex justify-between items-center mb-2">
                 <div>
-                    <p >저자명: <span th:text="${review.author}">Review Author</span></p>
+                    <p>저자명: <span th:text="${review.author}">Review Author</span></p>
+                    <p>작성자: <span th:text="${review.username}">Username</span></p>
                     <!-- 평점 표시 (텍스트와 별 모양) -->
                     <div class="review-rating flex items-center">
                         <span class="mr-2">평점:</span>
@@ -79,20 +66,24 @@
                 </div>
                 <!-- 수정, 삭제, 추천 버튼 (오른쪽 하단 위치) -->
                 <div class="mt-4 flex justify-end">
-                    <button class="btn btn-success btn-sm mx-1" th:onclick="'recommendReview(\'' + ${review.id} + '\')'" >추천</button>
-                    <a th:href="@{/review/update/{id}(id=${review.id})}" class="btn btn-primary btn-sm mx-1">수정</a>
-                    <a th:href="@{/review/delete/{id}(id=${review.id})}" class="btn btn-error btn-sm mx-1">삭제</a>
+                    <div th:if="${review.username == #authentication.name}">
+                        <a th:href="@{/usr/review/update/{id}(id=${review.id})}" class="btn btn-primary btn-sm mx-1">수정</a>
+                        <a th:href="@{/usr/review/delete/{id}(id=${review.id})}" class="btn btn-error btn-sm mx-1">삭제</a>
+                    </div>
+                    <form th:action="@{/usr/review/recommend/{id}(id=${review.id})}" method="post">
+                        <button type="submit" class="btn btn-success btn-sm mx-1">추천</button>
+                    </form>
                 </div>
             </div>
             <!-- 한줄평 -->
             <div class="review-content mt-2 whitespace-normal break-words" th:text="${review.content}">One-line Review</div>
         </div>
         <div class="pagination flex justify-center gap-2 mt-4">
-            <a th:if="${currentPage > 0}" th:href="@{/review/booklist(page=${currentPage - 1}, size=${size})}" class="btn">«</a>
+            <a th:if="${currentPage > 0}" th:href="@{/usr/review/movielist(page=${currentPage - 1}, size=${size})}" class="btn">«</a>
             <div th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" class="join-item">
-                <a th:href="@{/review/booklist(page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" th:class="${pageNum == currentPage} ? 'btn btn-active' : 'btn'"></a>
+                <a th:href="@{/usr/review/movielist(page=${pageNum}, size=${size})}" th:text="${pageNum + 1}" th:class="${pageNum == currentPage} ? 'btn btn-active' : 'btn'"></a>
             </div>
-            <a th:if="${currentPage < totalPages - 1}" th:href="@{/review/booklist(page=${currentPage + 1}, size=${size})}" class="btn">»</a>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/usr/review/movielist(page=${currentPage + 1}, size=${size})}" class="btn">»</a>
         </div>
     </div>
 </main>
