@@ -27,7 +27,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PreAuthorize("isAuthenticated()")
+
     @GetMapping("/booklist")
     public String listBookReviews(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "4") int size,
@@ -39,7 +39,6 @@ public class ReviewController {
         return "/usr/review/booklist";
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/movielist")
     public String listMovieReviews(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "4") int size,
