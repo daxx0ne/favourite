@@ -19,7 +19,7 @@ public class HomeController {
     public String showMain() {
         if (rq.isLogout()) return "redirect:/usr/member/login";
 
-        return "redirect:/usr/review/booklist";
+        return "redirect:/usr/home/main";
     }
 
     @GetMapping("/usr/debugSession")

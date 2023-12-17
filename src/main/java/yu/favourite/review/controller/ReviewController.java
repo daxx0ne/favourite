@@ -27,7 +27,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/booklist")
     public String listBookReviews(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "4") int size,
@@ -36,9 +36,10 @@ public class ReviewController {
         model.addAttribute("reviews", reviewPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reviewPage.getTotalPages());
-        return "/usr/review/booklist";
+        return "usr/review/booklist";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/movielist")
     public String listMovieReviews(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "4") int size,
@@ -47,14 +48,14 @@ public class ReviewController {
         model.addAttribute("reviews", reviewPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reviewPage.getTotalPages());
-        return "/usr/review/movielist";
+        return "usr/review/movielist";
     }
 
     // 리뷰 작성 폼 페이지
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/write")
     public String showWriteForm() {
-        return "/usr/review/write";
+        return "usr/review/write";
     }
 
     // 리뷰 작성
