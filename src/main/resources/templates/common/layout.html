@@ -22,6 +22,11 @@
     <!-- 공통 CSS 불러오기 -->
     <link rel="stylesheet" href="/common/common.css">
 
+    <script>
+        // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
+        const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
+    </script>
+
 </head>
 
 <body>
@@ -36,13 +41,7 @@
 
     <main layout:fragment="main"></main>
 
-    <content layout:fragment="content"></content>
 </div>
-
-<script>
-    // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-    const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
-</script>
 
 <script th:inline="javascript">
     if (params.msg) {
@@ -71,6 +70,9 @@
         }
     });
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/jdenticon@3.2.0/dist/jdenticon.min.js" async
+        integrity="sha384-yBhgDqxM50qJV5JPdayci8wCfooqvhFYbIKhv0hTtLvfeeyJMJCscRfFNKIxt43M"
+        crossorigin="anonymous">
+</script>
 </body>
 </html>
