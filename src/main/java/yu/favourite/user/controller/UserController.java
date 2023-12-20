@@ -24,7 +24,7 @@ public class UserController {
     @PreAuthorize("isAnonymous()")
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
-        return "/user/signup";
+        return "user/signup";
     }
 
     @PreAuthorize("isAnonymous()")

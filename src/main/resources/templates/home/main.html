@@ -23,20 +23,20 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a href="/review/booklist">
+                        <a th:href="@{/review/booklist}">
                             <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a href="@review/movielist">
+                        <a th:href="@{/review/movielist}">
                             <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Movie review
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" sec:authorize="isAnonymous()" href="/user/login">login</a>
-                        <a class="nav-link" sec:authorize="isAuthenticated()" href="@{/user/logout">logout</a>
+                        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">login</a>
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">logout</a>
                     </li>
                 </ul>
             </div>
@@ -49,8 +49,8 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body flex">
-                    <a href="/review/booklist" class="btn btn-lg btn-primary flex-auto"><i class="fa-solid fa-book"></i>BOOK</a>
-                    <a href="/review/movielist" class="btn btn-lg btn-secondary flex-auto"><i class="fa-solid fa-film"></i>MOVIE</a>
+                    <a th:href="@{/review/booklist}" class="btn btn-lg btn-primary flex-auto"><i class="fa-solid fa-book"></i>BOOK</a>
+                    <a th:href="@{/review/booklist}" class="btn btn-lg btn-secondary flex-auto"><i class="fa-solid fa-film"></i>MOVIE</a>
                 </div>
             </div>
         </div>
