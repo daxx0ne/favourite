@@ -14,8 +14,8 @@ import yu.favourite.category.repository.CategoryRepository;
 import yu.favourite.review.dto.ReviewDTO;
 import yu.favourite.review.entity.Review;
 import yu.favourite.review.repository.ReviewRepository;
-import yu.favourite.user.SiteUser;
-import yu.favourite.user.UserRepository;
+import yu.favourite.user.entity.SiteUser;
+import yu.favourite.user.repository.UserRepository;
 
 
 @Service
@@ -38,7 +38,11 @@ public class ReviewService {
         SiteUser siteUser = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
 
+        Category category = categoryRepository.findById(reviewDTO.getCategory().getId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 카테고리 ID: " + reviewDTO.getCategory()));
+
         Review review = reviewDTO.toEntity();
+        review.setCategory(category);
         review.setSiteuser(siteUser);
         reviewRepository.save(review);
     }
@@ -69,11 +73,10 @@ public class ReviewService {
         if (!review.getSiteuser().getUsername().equals(currentUsername)) {
             throw new AccessDeniedException("수정 권한이 없습니다.");
         }
-        Category category = categoryRepository.findById(reviewDTO.getCategory())
+        Category category = categoryRepository.findById(reviewDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 카테고리 ID: " + reviewDTO.getCategory()));
 
-        review.setCategory(category); // 카테고리 설정
-        review.setAuthor(reviewDTO.getAuthor());
+        review.setCategory(reviewDTO.getCategory()); // 카테고리 설정
         review.setAuthor(reviewDTO.getAuthor());
         review.setTitle(reviewDTO.getTitle());
         review.setContent(reviewDTO.getContent());

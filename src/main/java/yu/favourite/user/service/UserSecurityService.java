@@ -1,4 +1,4 @@
-package yu.favourite.user;
+package yu.favourite.user.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import yu.favourite.user.entity.SiteUser;
+import yu.favourite.user.UserRole;
+import yu.favourite.user.repository.UserRepository;
 
 @RequiredArgsConstructor
 @Service

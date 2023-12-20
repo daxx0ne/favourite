@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import yu.favourite.category.entity.Category;
-import yu.favourite.user.SiteUser;
-
-import java.util.Set;
+import yu.favourite.user.entity.SiteUser;
 
 @Getter
 @Entity

@@ -1,10 +1,12 @@
-package yu.favourite.user;
+package yu.favourite.user.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import yu.favourite.base.DataNotFoundException;
+import yu.favourite.user.entity.SiteUser;
+import yu.favourite.user.repository.UserRepository;
 
 import java.util.Optional;
 

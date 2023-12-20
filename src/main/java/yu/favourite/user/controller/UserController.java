@@ -1,4 +1,4 @@
-package yu.favourite.user;
+package yu.favourite.user.controller;
 
 import jakarta.validation.Valid;
 
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
+import yu.favourite.user.UserCreateForm;
+import yu.favourite.user.service.UserService;
 
 @RequiredArgsConstructor
 @Controller

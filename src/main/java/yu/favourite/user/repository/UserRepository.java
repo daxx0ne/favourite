@@ -1,6 +1,7 @@
-package yu.favourite.user;
+package yu.favourite.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import yu.favourite.user.entity.SiteUser;
 
 import java.util.Optional;
 

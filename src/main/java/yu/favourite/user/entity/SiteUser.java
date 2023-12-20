@@ -1,4 +1,4 @@
-package yu.favourite.user;
+package yu.favourite.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

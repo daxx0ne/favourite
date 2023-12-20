@@ -3,9 +3,6 @@ package yu.favourite.review.dto;
 import lombok.*;
 import yu.favourite.category.entity.Category;
 import yu.favourite.review.entity.Review;
-import yu.favourite.user.SiteUser;
-
-import java.util.Set;
 
 
 @Getter
@@ -15,7 +12,7 @@ import java.util.Set;
 public class ReviewDTO {
 
     private Long id;
-    private int category;
+    private Category category;
     private String title;
     private String author;
     private String content;
@@ -30,7 +27,7 @@ public class ReviewDTO {
     }
 
     @Builder
-    public ReviewDTO(Long id, int category, String author,
+    public ReviewDTO(Long id, Category category, String author,
                      String title, String content, int rate, String username) {
         this.id = id;
         this.category = category;

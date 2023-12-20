@@ -2,8 +2,6 @@ package yu.favourite.review.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -13,13 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yu.favourite.review.dto.ReviewDTO;
-import yu.favourite.review.entity.Review;
-import yu.favourite.review.repository.ReviewRepository;
 import yu.favourite.review.service.ReviewService;
-import yu.favourite.user.SiteUser;
-import yu.favourite.user.UserService;
-
-import java.security.Principal;
 
 
 @Controller
