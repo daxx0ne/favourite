@@ -34,9 +34,15 @@
                             Movie review
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">login</a>
-                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">logout</a>
+                    <li>
+                        <a sec:authorize="isAnonymous()" th:href="@{/user/login}">
+                            <i class="fa-solid fa-power-off text-xl mr-2"></i>
+                            Login
+                        </a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/user/logout}">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-xl mr-2"></i>
+                            Logout
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -49,8 +55,10 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body flex">
-                    <a th:href="@{/review/booklist}" class="btn btn-lg btn-primary flex-auto"><i class="fa-solid fa-book"></i>BOOK</a>
-                    <a th:href="@{/review/booklist}" class="btn btn-lg btn-secondary flex-auto"><i class="fa-solid fa-film"></i>MOVIE</a>
+                    <a th:href="@{/review/booklist}" class="btn btn-lg btn-primary flex-auto"><i
+                            class="fa-solid fa-book"></i>BOOK</a>
+                    <a th:href="@{/review/movielist}" class="btn btn-lg btn-secondary flex-auto"><i
+                            class="fa-solid fa-film"></i>MOVIE</a>
                 </div>
             </div>
         </div>

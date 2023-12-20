@@ -73,20 +73,26 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a href="/review/booklist">
+                        <a th:href="@{/review/booklist}">
                             <i class="fa-solid fa-book text-xl mr-2"></i>
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a href="@review/movielist">
+                        <a th:href="@{/review/movielist}">
                             <i class="fa-solid fa-film text-xl mr-2"></i>
                             Movie review
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" sec:authorize="isAnonymous()" href="/user/login">login</a>
-                        <a class="nav-link" sec:authorize="isAuthenticated()" href="@{/user/logout">logout</a>
+                    <li>
+                        <a sec:authorize="isAnonymous()" th:href="@{/user/login}">
+                            <i class="fa-solid fa-power-off text-xl mr-2"></i>
+                            Login
+                        </a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/user/logout}">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-xl mr-2"></i>
+                            Logout
+                        </a>
                     </li>
                 </ul>
             </div>
