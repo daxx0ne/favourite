@@ -3,7 +3,28 @@
     <title>리뷰 삭제하기</title>
 
     <script>
+        function validateForm() {
 
+            const password = document.getElementById("password").value;
+
+            if (password.trim().length === 0) {
+                toastWarning("비밀번호를 입력해주세요.");
+                return false;
+            }
+
+            if (password.length !== 4) {
+                toastWarning("비밀번호는 4자리여야 합니다.");
+                return false;
+            }
+
+            return true;
+        }
+
+        $(document).ready(function () {
+            $('#content').on('keyup', function () {
+                $('#contentCount').html("(" + $(this).val().length + " / 100)");
+            });
+        });
     </script>
 </head>
 <body>
@@ -12,7 +33,7 @@
         <div class="navbar-start">
         </div>
         <div class="navbar-center">
-            <a class="btn btn-ghost text-xl">Favourite</a>
+            <a th:href="@{/}" class="btn btn-ghost text-xl">Favourite</a>
         </div>
         <div class="navbar-end">
             <div class="dropdown dropdown-bottom dropdown-end">
@@ -26,16 +47,20 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a th:href="@{/usr/review/booklist}">
-                            <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
+                        <a th:href="@{/review/booklist}">
+                            <i class="fa-solid fa-book text-xl mr-2"></i>
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/usr/review/movielist}">
-                            <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
+                        <a th:href="@{/review/movielist}">
+                            <i class="fa-solid fa-film text-xl mr-2"></i>
                             Movie review
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">login</a>
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">logout</a>
                     </li>
                 </ul>
             </div>
@@ -51,13 +76,11 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <form th:action="@{/usr/review/delete/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
+                    <form th:action="@{/review/delete/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
                         <div class="mb-4">
                             <i class="fa-solid fa-triangle-exclamation"></i>
                             <span>정말로 삭제하시겠습니까?</span>
                         </div>
-
-                        <!-- 삭제 버튼 -->
                         <div class="mb-4 flex justify-end">
                             <button type="submit" id="submitBtn" class="btn btn-outline btn-error">삭제</button>
                         </div>

@@ -6,23 +6,24 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import yu.favourite.member.entity.Member;
+import yu.favourite.category.entity.Category;
+import yu.favourite.user.SiteUser;
+
+import java.util.Set;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(length = 20, nullable = false)
     private String title;
@@ -36,26 +37,20 @@ public class Review {
     @Column(nullable = false)
     private int rate;
 
-    @Column(nullable = false)
-    private int password;
-
-    private int recommend;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member; // member 테이블의 유저네임을 가져오고 싶어서 참조
+    @JoinColumn(name = "site_user_id")
+    private SiteUser siteuser;
 
     @Builder
-    public Review(Long id, Member member, int categoryId, String author, String title,
-                  String content, int rate, int recommend) {
+    public Review(Long id, Category category, String author, String title,
+                  String content, int rate, SiteUser siteuser) {
         this.id = id;
-        this.member = member;
-        this.categoryId = categoryId;
+        this.category = category;
         this.author = author;
         this.title = title;
         this.content = content;
         this.rate = rate;
-        this.recommend = recommend;
+        this.siteuser = siteuser;
     }
 
     public void setAuthor(String author) {
@@ -74,11 +69,10 @@ public class Review {
         this.rate = rate;
     }
 
-    public void setRecommend(int recommend) {
-        this.recommend = recommend;
+    public void setCategory(Category category) {
+        this.category = category;
     }
-
-    public void setMember(Member member) {
-        this.member = member;
+    public void setSiteuser(SiteUser siteuser) {
+        this.siteuser = siteuser;
     }
 }

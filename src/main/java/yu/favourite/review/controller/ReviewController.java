@@ -13,12 +13,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yu.favourite.review.dto.ReviewDTO;
-
+import yu.favourite.review.entity.Review;
+import yu.favourite.review.repository.ReviewRepository;
 import yu.favourite.review.service.ReviewService;
+import yu.favourite.user.SiteUser;
+import yu.favourite.user.UserService;
+
+import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/usr/review")
+@RequestMapping("/review")
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -36,7 +41,7 @@ public class ReviewController {
         model.addAttribute("reviews", reviewPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reviewPage.getTotalPages());
-        return "usr/review/booklist";
+        return "review/booklist";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -48,17 +53,17 @@ public class ReviewController {
         model.addAttribute("reviews", reviewPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reviewPage.getTotalPages());
-        return "usr/review/movielist";
+        return "review/movielist";
     }
+
 
     // 리뷰 작성 폼 페이지
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/write")
     public String showWriteForm() {
-        return "usr/review/write";
+        return "review/write";
     }
 
-    // 리뷰 작성
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
     public String write(ReviewDTO reviewDTO, RedirectAttributes redirectAttributes, HttpServletRequest request) {
@@ -71,14 +76,12 @@ public class ReviewController {
         return "redirect:/";
     }
 
-
-    // 리뷰 수정 폼 페이지
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable Long id, Model model) {
         ReviewDTO review = reviewService.findById(id);
         model.addAttribute("review", review);
-        return "usr/review/update";
+        return "review/update";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -90,7 +93,7 @@ public class ReviewController {
         } catch (AccessDeniedException e) {
             redirectAttributes.addFlashAttribute("error", "수정 권한이 없습니다.");
         }
-        return "redirect:/"; // or the appropriate redirect path
+        return "redirect:/";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -98,7 +101,7 @@ public class ReviewController {
     public String showDeleteForm(@PathVariable Long id, Model model) {
         ReviewDTO review = reviewService.findById(id);
         model.addAttribute("review", review);
-        return "usr/review/delete";
+        return "review/delete";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -110,20 +113,6 @@ public class ReviewController {
         } catch (AccessDeniedException e) {
             redirectAttributes.addFlashAttribute("error", "삭제 권한이 없습니다.");
         }
-        return "redirect:/"; // or the appropriate redirect path
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/recommend/{id}")
-    public String recommendReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            ReviewDTO updatedReview = reviewService.incrementRecommend(id);
-            // 성공 메시지 추가 (선택 사항)
-            redirectAttributes.addFlashAttribute("message", "리뷰가 추천되었습니다.");
-        } catch (Exception e) {
-            // 오류 메시지 추가 (선택 사항)
-            redirectAttributes.addFlashAttribute("error", "추천 중 오류가 발생했습니다.");
-        }
-        return "redirect:/usr/review/booklist";
+        return "redirect:/";
     }
 }

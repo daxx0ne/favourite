@@ -9,7 +9,6 @@
             const author = document.getElementById("author").value;
             const content = document.getElementById("content").value;
             const rate = document.querySelector('input[name="rate"]:checked');
-            const password = document.getElementById("password").value;
 
             if (title.trim().length === 0) {
                 toastWarning("제목을 입력해주세요.");
@@ -31,18 +30,8 @@
                 return false;
             }
 
-            if (password.trim().length === 0) {
-                toastWarning("비밀번호를 입력해주세요.");
-                return false;
-            }
-
             if (title.length > 20) {
                 toastWarning("제목은 최대 20자까지 작성 가능합니다.");
-                return false;
-            }
-
-            if (password.length !== 4) {
-                toastWarning("비밀번호는 4자리여야 합니다.");
                 return false;
             }
 
@@ -62,7 +51,7 @@
         <div class="navbar-start">
         </div>
         <div class="navbar-center">
-            <a class="btn btn-ghost text-xl">Favourite</a>
+            <a th:href="@{/}" class="btn btn-ghost text-xl">Favourite</a>
         </div>
         <div class="navbar-end">
             <div class="dropdown dropdown-bottom dropdown-end">
@@ -76,16 +65,20 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>
-                        <a th:href="@{/usr/review/booklist}">
+                        <a th:href="@{/review/booklist}">
                             <i class="fa-solid fa-book text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Book review
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/usr/review/movielist}">
+                        <a th:href="@{/review/movielist}">
                             <i class="fa-solid fa-film text-xl mr-2"></i> <!-- 아이콘 추가 -->
                             Movie review
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">login</a>
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">logout</a>
                     </li>
                 </ul>
             </div>
@@ -101,7 +94,7 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <form th:action="@{/usr/review/update/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
+                    <form th:action="@{/review/update/{id}(id=${review.id})}" method="post" onSubmit="return validateForm()">
                         <!-- 제목 필드 -->
                         <div class="mb-4">
                             <label for="title" class="block text-gray-700 text-sm font-bold mb-2">제목</label>

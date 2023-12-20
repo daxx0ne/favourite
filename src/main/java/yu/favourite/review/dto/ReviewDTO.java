@@ -1,7 +1,11 @@
 package yu.favourite.review.dto;
 
 import lombok.*;
+import yu.favourite.category.entity.Category;
 import yu.favourite.review.entity.Review;
+import yu.favourite.user.SiteUser;
+
+import java.util.Set;
 
 
 @Getter
@@ -11,33 +15,30 @@ import yu.favourite.review.entity.Review;
 public class ReviewDTO {
 
     private Long id;
-    private int categoryId;
-    private String categoryName;
+    private int category;
     private String title;
-    private String author; // 작품의 감독명 or 저자명
+    private String author;
     private String content;
     private int rate;
-    private int password;
-    private int recommend;
-    private String username; // member 테이블의 username
+    private String username;
 
     public Review toEntity() {
         return Review.builder()
-                .id(id).categoryId(categoryId).author(author)
+                .id(id).author(author)
                 .title(title).content(content).rate(rate)
-                .recommend(recommend).build();
+                .build();
     }
 
     @Builder
-    public ReviewDTO(Long id, int categoryId, String author,
-                     String title, String content, int rate, int recommend, String username) {
+    public ReviewDTO(Long id, int category, String author,
+                     String title, String content, int rate, String username) {
         this.id = id;
-        this.categoryId = categoryId;
+        this.category = category;
         this.author = author;
         this.title = title;
         this.content = content;
         this.rate = rate;
-        this.recommend = recommend;
         this.username = username;
     }
+
 }

@@ -1,28 +1,21 @@
 package yu.favourite.home.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.ResponseBody;
-import yu.favourite.base.rq.Rq;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Enumeration;
 
 @Controller
-@RequiredArgsConstructor
 public class HomeController {
-    private final Rq rq;
 
     @GetMapping("/")
     public String showMain() {
-        if (rq.isLogout()) return "redirect:/usr/member/login";
-
-        return "redirect:/usr/home/main";
+        return "/home/main";
     }
 
-    @GetMapping("/usr/debugSession")
+    @GetMapping("/debugSession")
     @ResponseBody
     public String showDebugSession(HttpSession session) {
         StringBuilder sb = new StringBuilder("Session content:\n");
@@ -36,4 +29,6 @@ public class HomeController {
 
         return sb.toString().replaceAll("\n", "<br>");
     }
+
 }
+

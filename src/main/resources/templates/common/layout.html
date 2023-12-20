@@ -22,11 +22,6 @@
     <!-- 공통 CSS 불러오기 -->
     <link rel="stylesheet" href="/common/common.css">
 
-    <script>
-        // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-        const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
-    </script>
-
 </head>
 
 <body>
@@ -41,7 +36,13 @@
 
     <main layout:fragment="main"></main>
 
+    <content layout:fragment="content"></content>
 </div>
+
+<script>
+    // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
+    const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
+</script>
 
 <script th:inline="javascript">
     if (params.msg) {
@@ -70,5 +71,6 @@
         }
     });
 </script>
+
 </body>
 </html>

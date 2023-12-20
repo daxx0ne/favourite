@@ -1,0 +1,118 @@
+<html layout:decorate="~{common/layout.html}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>책 리뷰 목록</title>
+
+    <script layout:fragment="script" type='text/javascript'>
+        const recommend_elements = document.getElementsByClassName("recommend");
+        Array.from(recommend_elements).forEach(function (element) {
+            element.addEventListener('click', function () {
+                if (confirm("정말로 추천하시겠습니까?")) {
+                    location.href = this.dataset.uri;
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+<header layout:fragment="header" class="sticky top-0 z-50">
+    <div class="navbar max-w-2xl mx-auto bg-base-100">
+        <div class="navbar-start">
+        </div>
+        <div class="navbar-center">
+            <a th:href="@{/}" class="btn btn-ghost text-xl">Favourite</a>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown dropdown-bottom dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
+                </div>
+                <ul tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li>
+                        <a th:href="@{/review/booklist}">
+                            <i class="fa-solid fa-book text-xl mr-2"></i>
+                            Book review
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/review/movielist}">
+                            <i class="fa-solid fa-film text-xl mr-2"></i>
+                            Movie review
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">login</a>
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <div class="max-w-2xl w-full px-4">
+        <h1 class="text-3xl font-bold mb-4">
+            <i class="fa-solid fa-book text-2xl mr-2"></i>
+            Book Review
+        </h1>
+        <a th:href="@{/review/write}" class="btn btn-outline w-full mb-4">리뷰 작성하기</a>
+
+        <div th:each="review : ${reviews}" class="review-card bg-white p-4 shadow-lg rounded-lg mb-4 flex flex-col">
+            <div class="review-title text-xl font-bold mb-2" th:text="${review.title}">Review Title</div>
+            <div class="review-info flex justify-between items-center mb-2">
+                <div>
+                    <p>저자명: <span th:text="${review.author}">Review Author</span></p>
+                    <p>작성자: <span th:text="${review.username}">Username</span></p>
+                    <div class="review-rating flex items-center">
+                        <span class="mr-2">평점:</span>
+                        <div class="flex">
+                            <p th:each="star : ${#numbers.sequence(1, review.rate)}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500"
+                                     fill="currentColor" viewBox="0 0 24 24" stroke="none">
+                                    <path d="M12 .587l3.297 6.673 7.176 1.044-5.19 5.058 1.225 7.15L12 17.26l-6.508 3.252 1.225-7.15-5.19-5.058 7.176-1.044L12 .587z"/>
+                                </svg>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex justify-end">
+                    <a th:if="${review.username != null and #authentication.getPrincipal().getUsername() == review.username}"
+                       th:href="@{/review/update/{id}(id=${review.id})}"
+                       class="btn btn-primary btn-sm mx-1">수정</a>
+
+                    <a th:if="${review.username != null and #authentication.getPrincipal().getUsername() == review.username}"
+                       th:href="@{/review/delete/{id}(id=${review.id})}"
+                       class="btn btn-error btn-sm mx-1">삭제</a>
+
+                    <a href="javascript:void(0);" class="btn btn-success btn-sm mx-1"
+                       th:data-uri="@{|/question/vote/${review.id}|}">
+                        추천
+                    </a>
+                </div>
+            </div>
+
+            <div class="review-content mt-2 whitespace-normal break-words" th:text="${review.content}">One-line Review
+            </div>
+        </div>
+        <div th:if="${totalPages != null}">
+            <div class="pagination flex justify-center gap-2 mt-4">
+                <a th:if="${currentPage > 0}" th:href="@{/review/booklist(page=${currentPage - 1}, size=${size})}"
+                   class="btn">«</a>
+                <div th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" class="join-item">
+                    <a th:href="@{/review/booklist(page=${pageNum}, size=${size})}" th:text="${pageNum + 1}"
+                       th:class="${pageNum == currentPage} ? 'btn btn-active' : 'btn'"></a>
+                </div>
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/review/booklist(page=${currentPage + 1}, size=${size})}" class="btn">»</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
