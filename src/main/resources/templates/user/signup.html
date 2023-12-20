@@ -77,9 +77,7 @@
         <div class="flex flex-col gap-4">
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <form th:action="@{/user/signup}" method="post" th:object="${userCreateForm}" onSubmit="return validateForm()">
-                        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
-                        <div></div>
+                    <form th:action="@{/user/signup}" method="post" onSubmit="return validateForm()">
                         <div class="mb-4">
                             <label for="username" class="block text-gray-700 text-sm font-bold mb-2">아이디</label>
                             <input type="text" id="username" name="username" class="input input-bordered w-full">
